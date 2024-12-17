@@ -1,7 +1,8 @@
-import { getSortedColumns, readInputFile } from "./common.ts";
+import { linesFromInputFile } from "../../shared.ts";
+import { getSortedColumns } from "./common.ts";
 
 export default async function main(args: typeof Deno.args) {
-  const contentLines = await readInputFile(args[0] ?? "input.txt");
+  const contentLines = await linesFromInputFile(args[0] ?? "input.txt");
   const [firstColumn, secondColumn] = getSortedColumns(contentLines);
 
   let totalDistance = 0;
