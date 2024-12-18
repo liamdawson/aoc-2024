@@ -1,4 +1,4 @@
-import * as path from "jsr:@std/path";
+import * as path from "node:path";
 
 const paths = {
   rootDir: path.resolve(import.meta.dirname ?? "."),
@@ -12,12 +12,7 @@ const paths = {
 };
 
 if (import.meta.main) {
-  await Deno.permissions.request({
-    name: "read",
-    path: "solutions",
-  });
-
-  const args = [...Deno.args];
+  const args = process.argv.slice(2);
   const day = Number(args.shift());
   let part: undefined | number = undefined;
 
@@ -37,28 +32,30 @@ if (import.meta.main) {
     args.shift();
   }
 
-  const targets = part === undefined
-    ? [1, 2].map((part) => [day, part])
-    : [[day, part]];
+  const targets =
+    part === undefined ? [1, 2].map((part) => [day, part]) : [[day, part]];
 
   for (const [day, part] of targets) {
     const loadPath = paths.solutionModulePath(day, part);
     const workingDir = paths.dayFolder(day);
 
-    Deno.chdir(workingDir);
+    process.chdir(workingDir);
     console.debug(
-      `\n%c${path.relative(paths.rootDir, loadPath)}`,
-      "font-weight: bold; text-decoration: underline;",
+      `\n\x1b[1m\x1b[4m${path.relative(paths.rootDir, loadPath)}\x1b[0m`,
     );
+    console.group();
 
     let main: (...args: unknown[]) => void | Promise<void>;
     try {
       main = (await import(loadPath)).default;
     } catch (err) {
       console.warn(`%cFailed to load module:%c\n${err}`, "color: orange", "");
+      console.groupEnd();
       continue;
     }
 
     await main(args);
+
+    console.groupEnd();
   }
 }

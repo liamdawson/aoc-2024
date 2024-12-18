@@ -14,7 +14,7 @@ export function reportIsSafe(
   const ascending = report[0] < report[1];
   const [min, max] = ascending ? [1, 3] : [-3, -1];
 
-  for (let i = 0; i < (report.length - 1); i++) {
+  for (let i = 0; i < report.length - 1; i++) {
     const a = report[i];
     const b = report[i + 1];
     const diff = b - a;
@@ -38,14 +38,11 @@ export function reportIsSafe(
 
 export function parseReports(inputLines: string[]) {
   return inputLines.flatMap((line) => {
-    const report = line.split(" ").filter((v) => v.trim()).flatMap((value) => {
-      const parsed = Number(value);
-      if (!Number.isNaN(parsed)) {
-        return [parsed];
-      }
-
-      return [];
-    });
+    const report = line
+      .split(" ")
+      .filter((v) => v.trim())
+      .map((value) => Number(value))
+      .filter((n) => !Number.isNaN(n));
 
     if (report.length > 0) {
       return [report];

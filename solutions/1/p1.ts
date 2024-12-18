@@ -1,7 +1,7 @@
-import { linesFromInputFile } from "../../shared.ts";
+import { linesFromInputFile } from "#shared";
 import { getSortedColumns } from "./common.ts";
 
-export default async function main(args: typeof Deno.args) {
+export default async function main(args: string[]) {
   const contentLines = await linesFromInputFile(args[0] ?? "input.txt");
   const [firstColumn, secondColumn] = getSortedColumns(contentLines);
 
@@ -16,5 +16,5 @@ export default async function main(args: typeof Deno.args) {
 }
 
 if (import.meta.main) {
-  main(Deno.args);
+  await main(process.argv.slice(2));
 }

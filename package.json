@@ -1,0 +1,25 @@
+{
+  "name": "aoc-2024",
+  "module": "main.ts",
+  "type": "module",
+  "imports": {
+    "#shared": {
+      "default": "./shared.ts"
+    }
+  },
+  "scripts": {
+    "test": "vitest",
+    "start": "bun run ./main.ts --"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "1.9.4",
+    "@types/bun": "latest",
+    "vitest": "^2.1.8"
+  },
+  "peerDependencies": {
+    "typescript": "^5.0.0"
+  },
+  "trustedDependencies": [
+    "@biomejs/biome"
+  ]
+}

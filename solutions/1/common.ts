@@ -1,7 +1,3 @@
-export async function readInputFile(path: string): Promise<string[]> {
-  return (await Deno.readTextFile(path)).split(/\r?\n/);
-}
-
 const extractorRegex = /^\s*(\d+)\s+(\d+)\s*$/;
 export function getSortedColumns(contentLines: string[]): [number[], number[]] {
   const lists: [number[], number[]] = [[], []];

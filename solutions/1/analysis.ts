@@ -1,12 +1,16 @@
-import { getSortedColumns, readInputFile } from "./common.ts";
+import { linesFromInputFile } from "#shared";
+import { getSortedColumns } from "./common.ts";
 
-export default async function main(args: typeof Deno.args) {
-  const contentLines = await readInputFile(args[0] ?? "input.txt");
+export default async function main(args: string[]) {
+  const contentLines = await linesFromInputFile(args[0] ?? "input.txt");
   const [firstColumn, _secondColumn] = getSortedColumns(contentLines);
 
   console.log({
-    firstColumnDuplicates: firstColumn.length - (new Set(firstColumn)).size,
+    firstColumnDuplicates: firstColumn.length - new Set(firstColumn).size,
   });
 }
 
-await main(Deno.args);
+// for running inside Zed
+if (typeof Deno !== "undefined") {
+  await main(Deno.args);
+}
