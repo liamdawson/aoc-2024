@@ -18,7 +18,7 @@ export type ParsedInstruction<
 
 const knownInstructions = ["mul"] as const;
 const maybeInstruction = new RegExp(
-  `(${knownInstructions.join("|")})([(][^)]*[)])`,
+  `(${knownInstructions.join("|")})(?=([(][^)]*[)]))`,
   "g",
 );
 const remainderRegexFor: Record<string, RegExp> = {
