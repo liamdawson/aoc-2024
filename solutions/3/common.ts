@@ -16,16 +16,20 @@ export type ParsedInstruction<
   Operation extends InstructionOperation = InstructionOperation,
 > = Instruction<Operation> & { raw: string };
 
-const maybeInstruction = /(mul[(])([^)]*[)])/g;
+const knownInstructions = ["mul"] as const;
+const maybeInstruction = new RegExp(
+  `(${knownInstructions.join("|")})([(][^)]*[)])`,
+  "g",
+);
 const remainderRegexFor: Record<string, RegExp> = {
-  mul: /^(\d+),(\d+)\)$/,
+  mul: /^\((\d+),(\d+)\)$/,
 };
 
 export function parseInstructions(input: string): ParsedInstruction[] {
   const mulMatches = input
     .matchAll(maybeInstruction)
     .flatMap(([raw, start, remainder]) => {
-      const op = start.substring(0, start.length - 1) as InstructionOperation;
+      const op = start as InstructionOperation;
 
       const remainderRegex = remainderRegexFor[op];
       const remainderResult = remainderRegex?.exec(remainder);

@@ -29,6 +29,10 @@ describe(parseInstructions.name, () => {
   test("ignores surrounding characters", () => {
     expect(parseInstructions("testmul(2,3),halt()")).toEqual([instr.mul(2, 3)]);
   });
+
+  test("parses a 'nested' instruction", () => {
+    expect(parseInstructions("mul(mul(17,4))")).toEqual([instr.mul(17, 4)]);
+  });
 });
 
 describe(evaluateInstruction.name, () => {

@@ -10,6 +10,7 @@ export default async function main(args: string[]) {
     .reduce((a, b) => a + b);
 
   console.log(`Sum of ${instructions.length} instructions = ${result}`);
+  // console.log(instructions.map((i) => i.raw).join("\n"));
 }
 
 if (import.meta.main) {
