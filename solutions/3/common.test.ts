@@ -1,6 +1,6 @@
 import { describe, test, expect } from "vitest";
 import {
-  evaluateInstruction,
+  InstructionMachine,
   parseInstructions,
   type Instruction,
 } from "./common.ts";
@@ -35,20 +35,25 @@ describe(parseInstructions.name, () => {
   });
 });
 
-describe(evaluateInstruction.name, () => {
-  test.each<{ instruction: Instruction; result: number }>([
-    {
-      instruction: { op: "mul", args: [44, 46] },
-      result: 2024,
-    },
-    {
-      instruction: { op: "mul", args: [123, 4] },
-      result: 492,
-    },
-  ])(
-    "$instruction.kind($instruction.args) -> $result",
-    ({ instruction, result }) => {
-      expect(evaluateInstruction(instruction)).toEqual(result);
-    },
-  );
+describe(InstructionMachine.name, () => {
+  describe("calculates single instructions", () => {
+    test.each<{ instruction: Instruction; result: number }>([
+      {
+        instruction: { op: "mul", args: [44, 46] },
+        result: 2024,
+      },
+      {
+        instruction: { op: "mul", args: [123, 4] },
+        result: 492,
+      },
+    ])(
+      "$instruction.op($instruction.args) -> $result",
+      ({ instruction, result }) => {
+        const machine = new InstructionMachine();
+        machine.add(instruction);
+
+        expect(machine.calculate()).toEqual(result);
+      },
+    );
+  });
 });

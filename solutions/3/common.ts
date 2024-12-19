@@ -26,9 +26,8 @@ const remainderRegexFor: Record<string, RegExp> = {
 };
 
 export function parseInstructions(input: string): ParsedInstruction[] {
-  const mulMatches = input
-    .matchAll(maybeInstruction)
-    .flatMap(([raw, start, remainder]) => {
+  return [
+    ...input.matchAll(maybeInstruction).flatMap(([raw, start, remainder]) => {
       const op = start as InstructionOperation;
 
       const remainderRegex = remainderRegexFor[op];
@@ -56,18 +55,32 @@ export function parseInstructions(input: string): ParsedInstruction[] {
       }
 
       return [];
-    });
-
-  return [...mulMatches];
+    }),
+  ];
 }
 
-export function evaluateInstruction(instruction: Instruction) {
-  switch (instruction.op) {
-    case "mul":
-      return instruction.args[0] * instruction.args[1];
+export class InstructionMachine {
+  public supportedOperations: Set<InstructionOperation>;
+  public readonly pendingOperations: Instruction[] = [];
+
+  constructor() {
+    this.supportedOperations = new Set([...knownInstructions]);
   }
 
-  // type error on unknown instruction
-  instruction.op satisfies never;
-  throw new Error("Unknown operation");
+  public add(instruction: Instruction): boolean {
+    if (!this.supportedOperations.has(instruction.op)) {
+      return false;
+    }
+
+    this.pendingOperations.push(instruction);
+
+    return true;
+  }
+
+  public calculate(): number {
+    return this.pendingOperations.reduce(
+      (prev, instruction) => prev + instruction.args[0] * instruction.args[1],
+      0,
+    );
+  }
 }

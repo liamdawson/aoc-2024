@@ -1,16 +1,18 @@
 import { linesFromInputFile } from "#shared";
-import { evaluateInstruction, parseInstructions } from "./common.ts";
+import { InstructionMachine, parseInstructions } from "./common.ts";
 
 export default async function main(args: string[]) {
   const inputLines = await linesFromInputFile(args[0] ?? "input.txt");
   const instructions = inputLines.flatMap((line) => parseInstructions(line));
+  const machine = new InstructionMachine();
 
-  const result = instructions
-    .map((instruction) => evaluateInstruction(instruction))
-    .reduce((a, b) => a + b);
+  for (const instruction of instructions) {
+    machine.add(instruction);
+  }
 
-  console.log(`Sum of ${instructions.length} instructions = ${result}`);
-  // console.log(instructions.map((i) => i.raw).join("\n"));
+  console.log(
+    `Sum of ${machine.pendingOperations.length} instructions = ${machine.calculate()}`,
+  );
 }
 
 if (import.meta.main) {
