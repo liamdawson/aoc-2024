@@ -1,68 +1,69 @@
-export function todo() {
-  return true;
+interface Instructions {
+  mul: [number, number];
 }
+export type InstructionOperation = keyof Instructions;
 
-interface InstructionMap {
-  mul: {
-    args: [number, number];
-    result: number;
+export type Instruction<
+  Operation extends InstructionOperation = InstructionOperation,
+> = {
+  readonly [Op in InstructionOperation]: {
+    op: Op;
+    args: Instructions[Op];
   };
-}
+}[Operation];
 
-export type InstructionKind = keyof InstructionMap;
+export type ParsedInstruction<
+  Operation extends InstructionOperation = InstructionOperation,
+> = Instruction<Operation> & { raw: string };
 
-export type Instruction<Kind extends InstructionKind = InstructionKind> = {
-  [K in keyof InstructionMap]: {
-    kind: K;
-    args: InstructionMap[K]["args"];
-    raw: string;
-  };
-}[Kind];
+const maybeInstruction = /(mul[(])([^)]*[)])/g;
+const remainderRegexFor: Record<string, RegExp> = {
+  mul: /^(\d+),(\d+)\)$/,
+};
 
-export type InstructionResult<Kind extends InstructionKind = InstructionKind> =
-  {
-    [K in keyof InstructionMap]: InstructionMap[K]["result"];
-  }[Kind];
-
-const mulInstructionRegex = /mul[(](\d+),(\d+)[)]/g;
-export function extractInstructions(input: string): Instruction[] {
+export function parseInstructions(input: string): ParsedInstruction[] {
   const mulMatches = input
-    .matchAll(mulInstructionRegex)
-    .flatMap(([raw, arg1, arg2]) => {
-      const args: [number, number] = [Number(arg1), Number(arg2)];
+    .matchAll(maybeInstruction)
+    .flatMap(([raw, start, remainder]) => {
+      const op = start.substring(0, start.length - 1) as InstructionOperation;
 
-      if (Number.isNaN(args[0]) || Number.isNaN(args[1])) {
+      const remainderRegex = remainderRegexFor[op];
+      const remainderResult = remainderRegex?.exec(remainder);
+
+      if (!remainderResult) {
         return [];
       }
 
-      return [
-        {
-          kind: "mul" as const,
-          args: args,
-          raw,
-        },
-      ];
+      if (op === "mul") {
+        const [_, arg1, arg2] = remainderResult;
+        const args: [number, number] = [Number(arg1), Number(arg2)];
+
+        if (Number.isNaN(args[0]) || Number.isNaN(args[1])) {
+          return [];
+        }
+
+        return [
+          {
+            op,
+            args,
+            raw,
+          },
+        ] as const;
+      }
+
+      return [];
     });
 
   return [...mulMatches];
 }
 
-function instructionIsKind<Kind extends InstructionKind>(
-  instruction: Instruction,
-  kind: Kind,
-): instruction is Instruction<Kind> {
-  return instruction.kind === kind;
-}
-
-export function evaluateInstruction<Kind extends InstructionKind>(
-  instruction: Instruction<Kind>,
-): InstructionResult<Kind> {
-  if (instructionIsKind(instruction, "mul")) {
-    return instruction.args[0] * instruction.args[1];
+export function evaluateInstruction(instruction: Instruction) {
+  switch (instruction.op) {
+    case "mul":
+      return instruction.args[0] * instruction.args[1];
   }
 
-  instruction satisfies never;
-  throw new Error(
-    `Unknown instruction kind ${(instruction as Record<string, string>).kind}`,
-  );
+  // type error on unknown instruction
+  instruction.op satisfies never;
+  throw new Error("Unknown operation");
 }

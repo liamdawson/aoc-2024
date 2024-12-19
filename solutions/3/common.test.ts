@@ -1,40 +1,44 @@
 import { describe, test, expect } from "vitest";
 import {
   evaluateInstruction,
-  extractInstructions,
+  parseInstructions,
   type Instruction,
-  type InstructionResult,
 } from "./common.ts";
 
-describe(extractInstructions.name, () => {
+const instr = {
+  mul(a: number, b: number) {
+    return expect.objectContaining({
+      op: "mul",
+      args: [a, b],
+    } satisfies Instruction);
+  },
+};
+
+describe(parseInstructions.name, () => {
   test("extracts a single, standalone instruction", () => {
-    expect(extractInstructions("mul(2,3)")).toEqual([
-      { kind: "mul", args: [2, 3], raw: "mul(2,3)" },
-    ]);
+    expect(parseInstructions("mul(2,3)")).toEqual([instr.mul(2, 3)]);
   });
 
   test("extracts two consecutive instructions", () => {
-    expect(extractInstructions("mul(2,3)mul(4,5)")).toEqual([
-      { kind: "mul", args: [2, 3], raw: "mul(2,3)" },
-      { kind: "mul", args: [4, 5], raw: "mul(4,5)" },
+    expect(parseInstructions("mul(2,3)mul(4,5)")).toEqual([
+      instr.mul(2, 3),
+      instr.mul(4, 5),
     ]);
   });
 
   test("ignores surrounding characters", () => {
-    expect(extractInstructions("testmul(2,3),halt()")).toEqual([
-      { kind: "mul", args: [2, 3], raw: "mul(2,3)" },
-    ]);
+    expect(parseInstructions("testmul(2,3),halt()")).toEqual([instr.mul(2, 3)]);
   });
 });
 
 describe(evaluateInstruction.name, () => {
-  test.each<{ instruction: Instruction; result: InstructionResult }>([
+  test.each<{ instruction: Instruction; result: number }>([
     {
-      instruction: { kind: "mul", args: [44, 46], raw: "mul(44,46)" },
+      instruction: { op: "mul", args: [44, 46] },
       result: 2024,
     },
     {
-      instruction: { kind: "mul", args: [123, 4], raw: "mul(123,4)" },
+      instruction: { op: "mul", args: [123, 4] },
       result: 492,
     },
   ])(

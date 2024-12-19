@@ -9,7 +9,8 @@
   },
   "scripts": {
     "test": "vitest",
-    "start": "bun run ./main.ts --"
+    "start": "bun run ./main.ts --",
+    "lint": "tsc --noEmit"
   },
   "devDependencies": {
     "@biomejs/biome": "1.9.4",
