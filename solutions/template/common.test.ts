@@ -1,8 +1,8 @@
-import { describe, test, expect } from "vitest";
+import { describe, expect, test } from "vitest";
 import { todo } from "./common.ts";
 
 describe(todo.name, () => {
-  test("is todo", () => {
-    expect(todo()).toBeTruthy();
-  });
+	test("is todo", () => {
+		expect(todo()).toBeTruthy();
+	});
 });
