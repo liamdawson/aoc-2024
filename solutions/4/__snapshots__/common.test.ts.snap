@@ -1,0 +1,39 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`gridify > basic grid 1`] = `
+{
+  "height": 4,
+  "letters": [
+    [
+      "X",
+      "M",
+      "A",
+      "S",
+      "S",
+    ],
+    [
+      "M",
+      "A",
+      "S",
+      "X",
+      "A",
+    ],
+    [
+      "A",
+      "S",
+      "X",
+      "M",
+      "M",
+    ],
+    [
+      "S",
+      "X",
+      "M",
+      "A",
+      "X",
+    ],
+  ],
+  "stringFrom": [Function],
+  "width": 5,
+}
+`;
