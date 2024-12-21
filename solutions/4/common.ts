@@ -18,14 +18,19 @@ interface SearchGrid {
   letters: string[][];
   width: number;
   height: number;
-  stringFrom(
+  travelFrom(
     start: Point,
     takeNext: number,
     direction: SearchDirection,
-  ): string | null;
+  ): SearchResult | null;
 }
 
 export type Point = [row: number, column: number];
+
+export type SearchResult = {
+  letters: string;
+  coordinates: Point[];
+};
 
 export function gridify(lines: string[]): SearchGrid {
   const letters: string[][] = [];
@@ -44,7 +49,7 @@ export function gridify(lines: string[]): SearchGrid {
     letters,
     width,
     height: letters.length,
-    stringFrom(start: Point, takeNext: number, direction: SearchDirection) {
+    travelFrom(start: Point, takeNext: number, direction: SearchDirection) {
       const [startRow, startCol] = start;
       const { rowStep, colStep } = searchDirections[direction];
 
@@ -61,14 +66,23 @@ export function gridify(lines: string[]): SearchGrid {
         return null;
       }
 
+      const coordinates: Point[] = [];
       const resultLetters = [];
+
       for (let i = 0; i <= takeNext; i++) {
-        resultLetters.push(
-          letters[startRow + rowStep * i][startCol + colStep * i],
-        );
+        const coordinate: Point = [
+          startRow + rowStep * i,
+          startCol + colStep * i,
+        ];
+
+        coordinates.push(coordinate);
+        resultLetters.push(letters[coordinate[0]][coordinate[1]]);
       }
 
-      return resultLetters.join("");
+      return {
+        letters: resultLetters.join(""),
+        coordinates,
+      };
     },
   };
 }
@@ -77,7 +91,7 @@ export function getMatches(needle: string, haystack: SearchGrid) {
   const needleLetters = needle.split("");
   const start = needleLetters[0];
   const remainderLength = needleLetters.length - 1;
-  let matchesFound = 0;
+  const matched: Point[][] = [];
 
   for (let rowIndex = 0; rowIndex < haystack.height; rowIndex++) {
     const row = haystack.letters[rowIndex];
@@ -86,20 +100,23 @@ export function getMatches(needle: string, haystack: SearchGrid) {
       const letter = row[colIndex];
 
       if (letter === start) {
-        const matchesHere = allSearchDirections
-          .map((direction) =>
-            haystack.stringFrom(
-              [rowIndex, colIndex],
-              remainderLength,
-              direction,
-            ),
-          )
-          .filter((result) => result === needle).length;
+        for (const direction of allSearchDirections) {
+          const result = haystack.travelFrom(
+            [rowIndex, colIndex],
+            remainderLength,
+            direction,
+          );
 
-        matchesFound += matchesHere;
+          if (result?.letters === needle) {
+            matched.push(result.coordinates);
+          }
+        }
       }
     }
   }
 
-  return matchesFound;
+  return {
+    totalMatches: matched.length,
+    coordinates: matched,
+  };
 }

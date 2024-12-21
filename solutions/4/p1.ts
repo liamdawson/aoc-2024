@@ -12,7 +12,7 @@ export default async function main(args: string[]) {
   const result = getMatches(searchString, grid);
   const endAt = new Date();
   console.log(
-    `Found ${result} match(es) for "${searchString}" (took ${endAt.getTime() - startAt.getTime()}ms).`,
+    `Found ${result.totalMatches} match(es) for "${searchString}" (took ${endAt.getTime() - startAt.getTime()}ms).`,
   );
 }
 

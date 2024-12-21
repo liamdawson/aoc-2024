@@ -1,10 +1,10 @@
 import { describe, expect, test } from "vitest";
 import { getMatches, gridify } from "./common.ts";
 
-const basicGrid = `XMASS
-MASXA
-ASXMM
-SXMAX`.split("\n");
+const basicGrid = `XMASSXX
+MASXAXX
+ASXMMMX
+SXMAXMX`.split("\n");
 
 describe(gridify.name, () => {
   test("basic grid", () => {
@@ -14,6 +14,8 @@ describe(gridify.name, () => {
 
 describe(getMatches.name, () => {
   test("basic grid", () => {
-    expect(getMatches("XMAS", gridify(basicGrid))).toEqual(3);
+    const result = getMatches("XMAS", gridify(basicGrid));
+    expect(result.totalMatches).toEqual(4);
+    expect(result).toMatchSnapshot();
   });
 });

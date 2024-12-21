@@ -1,5 +1,85 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
+exports[`getMatches > basic grid 1`] = `
+{
+  "coordinates": [
+    [
+      [
+        0,
+        0,
+      ],
+      [
+        0,
+        1,
+      ],
+      [
+        0,
+        2,
+      ],
+      [
+        0,
+        3,
+      ],
+    ],
+    [
+      [
+        0,
+        0,
+      ],
+      [
+        1,
+        0,
+      ],
+      [
+        2,
+        0,
+      ],
+      [
+        3,
+        0,
+      ],
+    ],
+    [
+      [
+        3,
+        4,
+      ],
+      [
+        2,
+        4,
+      ],
+      [
+        1,
+        4,
+      ],
+      [
+        0,
+        4,
+      ],
+    ],
+    [
+      [
+        3,
+        6,
+      ],
+      [
+        2,
+        5,
+      ],
+      [
+        1,
+        4,
+      ],
+      [
+        0,
+        3,
+      ],
+    ],
+  ],
+  "totalMatches": 4,
+}
+`;
+
 exports[`gridify > basic grid 1`] = `
 {
   "height": 4,
@@ -10,6 +90,8 @@ exports[`gridify > basic grid 1`] = `
       "A",
       "S",
       "S",
+      "X",
+      "X",
     ],
     [
       "M",
@@ -17,6 +99,8 @@ exports[`gridify > basic grid 1`] = `
       "S",
       "X",
       "A",
+      "X",
+      "X",
     ],
     [
       "A",
@@ -24,16 +108,20 @@ exports[`gridify > basic grid 1`] = `
       "X",
       "M",
       "M",
+      "M",
+      "X",
     ],
     [
       "S",
       "X",
       "M",
       "A",
+      "X",
+      "M",
       "X",
     ],
   ],
-  "stringFrom": [Function],
-  "width": 5,
+  "travelFrom": [Function],
+  "width": 7,
 }
 `;
