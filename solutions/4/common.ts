@@ -30,6 +30,7 @@ export type Point = [row: number, column: number];
 export type SearchResult = {
   letters: string;
   coordinates: Point[];
+  direction: SearchDirection;
 };
 
 export function gridify(lines: string[]): SearchGrid {
@@ -82,6 +83,7 @@ export function gridify(lines: string[]): SearchGrid {
       return {
         letters: resultLetters.join(""),
         coordinates,
+        direction,
       };
     },
   };
@@ -91,7 +93,7 @@ export function getMatches(needle: string, haystack: SearchGrid) {
   const needleLetters = needle.split("");
   const start = needleLetters[0];
   const remainderLength = needleLetters.length - 1;
-  const matched: Point[][] = [];
+  const matches: SearchResult[] = [];
 
   for (let rowIndex = 0; rowIndex < haystack.height; rowIndex++) {
     const row = haystack.letters[rowIndex];
@@ -108,7 +110,7 @@ export function getMatches(needle: string, haystack: SearchGrid) {
           );
 
           if (result?.letters === needle) {
-            matched.push(result.coordinates);
+            matches.push(result);
           }
         }
       }
@@ -116,7 +118,7 @@ export function getMatches(needle: string, haystack: SearchGrid) {
   }
 
   return {
-    totalMatches: matched.length,
-    coordinates: matched,
+    totalMatches: matches.length,
+    matches,
   };
 }
